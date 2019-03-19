@@ -25,7 +25,7 @@ const login = (request, response) => {
         return res.status(400).json({error: 'RAWR! All fields are required'});
     }
 
-    return Account.AccountModel.authenticate(username, pasword, (err, account) => {
+    return Account.AccountModel.authenticate(username, password, (err, account) => {
         if(err || !account){
             return res.status(401).sjon({error: 'Wrong username or password'});
         }
@@ -64,7 +64,7 @@ const signup = (request, response) => {
         savePromise.then(() => res.json({redirect:'/maker'}));
 
         savePromise.catch((err) => {
-            console.log(err);
+            //console.log(err);
 
             if(err.code === 11000){
                 return res.status(400).json({error: 'Username already in use.'});
