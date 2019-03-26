@@ -59,10 +59,27 @@ const DomoList = function(props) {
     );
 };
 
+const Welcome = function(props) {
+    return(
+        <div>
+            <h3>Welcome {props.name}</h3>
+        </div>
+    )
+}
+
 const loadDomosFromServer = () => {
     sendAjax('GET', '/getDomos', null, (data) => {
         ReactDOM.render(
             <DomoList domos={data.domos} />, document.querySelector("#domos")
+        );
+    });
+};
+
+const loadNameFromServer = () => {
+    sendAjax('GET', '/getName', null, (data) => {
+        console.log(data);
+        ReactDOM.render(
+            <Welcome name={data.name} />, document.querySelector("#welcome")
         );
     });
 };
@@ -75,6 +92,7 @@ const setup = function(csrf) {
     ReactDOM.render(
         <DomoList domos={[]} />, document.querySelector("#domos")
     );
+    loadNameFromServer();
     loadDomosFromServer();
 };
 

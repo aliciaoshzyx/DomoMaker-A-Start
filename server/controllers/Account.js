@@ -39,8 +39,9 @@ const signup = (request, response) => {
   req.body.username = `${req.body.username}`;
   req.body.pass = `${req.body.pass}`;
   req.body.pass2 = `${req.body.pass2}`;
+  req.body.name = `${req.body.name}`;
 
-  if (!req.body.username || !req.body.pass || !req.body.pass2) {
+  if (!req.body.username || !req.body.pass || !req.body.pass2 || !req.body.name) {
     return res.status(400).json({ error: 'RAWR! All fields are required' });
   }
 
@@ -53,6 +54,7 @@ const signup = (request, response) => {
       username: req.body.username,
       salt,
       password: hash,
+      name: req.body.name,
     };
 
     const newAccount = new Account.AccountModel(accountData);
@@ -76,6 +78,20 @@ const signup = (request, response) => {
   });
 };
 
+const getName = (request, response) => {
+  const req = request;
+  const res = response;
+  return Account.AccountModel.findByOwner(req.session.account._id, (err, docs) =>{
+    if(err) {
+      console.log(err);
+      return res.status(400).json({error:'An error occured'});
+    }
+    console.log(docs);
+    return res.json({name: docs});
+
+  });
+};
+
 const getToken = (request, response) => {
   const req = request;
   const res = response;
@@ -92,3 +108,4 @@ module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
+module.exports.getName = getName;

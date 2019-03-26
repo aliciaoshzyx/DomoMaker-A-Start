@@ -85,9 +85,29 @@ var DomoList = function DomoList(props) {
     );
 };
 
+var Welcome = function Welcome(props) {
+    return React.createElement(
+        "div",
+        null,
+        React.createElement(
+            "h3",
+            null,
+            "Welcome ",
+            props.name
+        )
+    );
+};
+
 var loadDomosFromServer = function loadDomosFromServer() {
     sendAjax('GET', '/getDomos', null, function (data) {
         ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
+    });
+};
+
+var loadNameFromServer = function loadNameFromServer() {
+    sendAjax('GET', '/getName', null, function (data) {
+        console.log(data);
+        ReactDOM.render(React.createElement(Welcome, { name: data.name }), document.querySelector("#welcome"));
     });
 };
 
@@ -95,6 +115,7 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
 
     ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
+    loadNameFromServer();
     loadDomosFromServer();
 };
 
