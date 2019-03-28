@@ -41,6 +41,8 @@ const DomoSchema = new mongoose.Schema({
 DomoSchema.statics.toAPI = (doc) => ({
   name: doc.name,
   age: doc.age,
+  favoriteColor: doc.favoriteColor,
+  _id: doc._id,
 });
 
 DomoSchema.statics.findByOwner = (ownerId, callback) => {
@@ -50,6 +52,9 @@ DomoSchema.statics.findByOwner = (ownerId, callback) => {
 
   return DomoModel.find(search).select('name age favoriteColor').exec(callback);
 };
+
+DomoSchema.statics.delete = (domoId, callback) =>
+  DomoModel.deleteOne({ _id: domoId }).exec(callback);
 
 DomoModel = mongoose.model('Domo', DomoSchema);
 

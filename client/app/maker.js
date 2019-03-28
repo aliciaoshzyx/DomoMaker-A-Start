@@ -14,6 +14,17 @@ const handleDomo = (e) => {
     return false;
 };
 
+const handleDelete = (e) => {
+    e.preventDefault();
+
+    $("#domoMessage").animate({width:'hide'}, 350);
+
+    sendAjax('POST', $("deleteDomoForm").attr("action"), $("#deleteDomoForm").serialize(), function(){
+        loadDomosFromServer();
+    });
+    return false;
+};
+
 const DomoForm = (props) => {
     return (
         <form id="domoForm"
@@ -51,6 +62,15 @@ const DomoList = function(props) {
                 <h3 className="domoName">Name: {domo.name} </h3>
                 <h3 className="domoAge">Age: {domo.age} </h3>
                 <h3 className="domoFavoriteColor">Favorite Color: {domo.favoriteColor} </h3>
+                <form id="deleteDomoForm" 
+                onSubmit={handleDelete} 
+                name="deleteDomoForm"
+                action="/deleteDomo"
+                method="POST">
+                    <input type="hidden" name="domoID" value ={domo._id}/>
+                    <input type="hidden" name="_csrf" value={props.csrf}/>
+                    <input id="deleteSubmit" type="submit" value="Delete Domo"/>
+                </form>
             </div>
         );
     });

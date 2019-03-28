@@ -16,6 +16,17 @@ var handleDomo = function handleDomo(e) {
     return false;
 };
 
+var handleDelete = function handleDelete(e) {
+    e.preventDefault();
+
+    $("#domoMessage").animate({ width: 'hide' }, 350);
+
+    sendAjax('POST', $("deleteDomoForm").attr("action"), $("#deleteDomoForm").serialize(), function () {
+        loadDomosFromServer();
+    });
+    return false;
+};
+
 var DomoForm = function DomoForm(props) {
     return React.createElement(
         "form",
@@ -87,6 +98,17 @@ var DomoList = function DomoList(props) {
                 "Favorite Color: ",
                 domo.favoriteColor,
                 " "
+            ),
+            React.createElement(
+                "form",
+                { id: "deleteDomoForm",
+                    onSubmit: handleDelete,
+                    name: "deleteDomoForm",
+                    action: "/deleteDomo",
+                    method: "POST" },
+                React.createElement("input", { type: "hidden", name: "domoID", value: domo._id }),
+                React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+                React.createElement("input", { id: "deleteSubmit", type: "submit", value: "Delete Domo" })
             )
         );
     });
@@ -142,7 +164,7 @@ var sendAjax = function sendAjax(type, action, data, success) {
         success: success,
         error: function error(xhr, status, _error) {
             var messageObj = JSON.parse(xhr.responseText);
-            handleErroe(messageObj.error);
+            handleError(messageObj.error);
         }
     });
 };
