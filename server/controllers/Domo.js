@@ -57,17 +57,19 @@ const getDomos = (request, response) => {
 };
 
 const deleteDomo = (request, response) => {
+  console.log("in delete controller");
   const req = request;
   const res = response;
-
-  return Domo.DomoModel.delete(req._id, (err) => {
+  if (!req.body._id) {
+    return res.status(400).json({ error: 'An error occurred' });
+  }
+  return Domo.DomoModel.deleteDomo(req.body._id, (err, docs) => {
     if (err) {
       console.log(err);
-      return res.status(400).json({ error: 'An error occured' });
+      return res.status(202).json({ error: 'An error occured' });
     }
     return false;
-  }
-  );
+  });
 };
 
 module.exports.makerPage = makerPage;

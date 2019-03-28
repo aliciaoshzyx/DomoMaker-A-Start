@@ -19,7 +19,7 @@ const handleDelete = (e) => {
 
     $("#domoMessage").animate({width:'hide'}, 350);
 
-    sendAjax('POST', $("deleteDomoForm").attr("action"), $("#deleteDomoForm").serialize(), function(){
+    sendAjax('POST', $("#deleteDomoForm").attr("action"), $("#deleteDomoForm").serialize(), function(){
         loadDomosFromServer();
     });
     return false;

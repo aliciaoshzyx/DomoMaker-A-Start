@@ -53,8 +53,15 @@ DomoSchema.statics.findByOwner = (ownerId, callback) => {
   return DomoModel.find(search).select('name age favoriteColor').exec(callback);
 };
 
-DomoSchema.statics.delete = (domoId, callback) =>
-  DomoModel.deleteOne({ _id: domoId }).exec(callback);
+DomoSchema.statics.deleteDomo = (domoID, callback) => {
+  const search = {
+    _id: convertId(domoID),
+  };
+
+  DomoModel.deleteOne(search, (err) => {
+    if (err) throw err;
+  }).exec(callback);
+};
 
 DomoModel = mongoose.model('Domo', DomoSchema);
 
