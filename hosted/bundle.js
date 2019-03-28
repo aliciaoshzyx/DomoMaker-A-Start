@@ -38,6 +38,12 @@ var DomoForm = function DomoForm(props) {
             "Age: "
         ),
         React.createElement("input", { id: "domoAge", type: "text", name: "age", placeholder: "Domo Age" }),
+        React.createElement(
+            "label",
+            { id: "colorLabel", htmlFor: "favoriteColor" },
+            "Favorite Color: "
+        ),
+        React.createElement("input", { id: "domoFavoriteColor", type: "text", name: "favoriteColor", placeholder: "Favorite Color" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
         React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make DOmo" })
     );
@@ -74,6 +80,13 @@ var DomoList = function DomoList(props) {
                 "Age: ",
                 domo.age,
                 " "
+            ),
+            React.createElement(
+                "h3",
+                { className: "domoFavoriteColor" },
+                "Favorite Color: ",
+                domo.favoriteColor,
+                " "
             )
         );
     });
@@ -85,29 +98,9 @@ var DomoList = function DomoList(props) {
     );
 };
 
-var Welcome = function Welcome(props) {
-    return React.createElement(
-        "div",
-        null,
-        React.createElement(
-            "h3",
-            null,
-            "Welcome ",
-            props.name
-        )
-    );
-};
-
 var loadDomosFromServer = function loadDomosFromServer() {
     sendAjax('GET', '/getDomos', null, function (data) {
         ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
-    });
-};
-
-var loadNameFromServer = function loadNameFromServer() {
-    sendAjax('GET', '/getName', null, function (data) {
-        console.log(data);
-        ReactDOM.render(React.createElement(Welcome, { name: data.name }), document.querySelector("#welcome"));
     });
 };
 
@@ -115,7 +108,6 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
 
     ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
-    loadNameFromServer();
     loadDomosFromServer();
 };
 

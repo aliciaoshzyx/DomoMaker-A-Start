@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-const convertId = mongoose.Types.ObjectId;
 
 let AccountModel = {};
 const iterations = 10000;
@@ -29,10 +28,6 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  name: {
-    type: String,
-    required:true,
-  }
 });
 
 AccountSchema.statics.toAPI = doc => ({
@@ -66,14 +61,6 @@ AccountSchema.statics.generateHash = (password, callback) => {
   crypto.pbkdf2(password, salt, iterations, keyLength, 'RSA-SHA512', (err, hash) =>
     callback(salt, hash.toString('hex'))
   );
-};
-
-AccountSchema.statics.findByOwner = (ownerId, callback) => {
-  const search = {
-    owner: convertId(ownerId),
-  };
-
-  return AccountModel.find(search).select('name').exec(callback);
 };
 
 AccountSchema.statics.authenticate = (username, password, callback) =>

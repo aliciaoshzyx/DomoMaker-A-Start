@@ -27,6 +27,8 @@ const DomoForm = (props) => {
             <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
             <label htmlFor="age">Age: </label>
             <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
+            <label id="colorLabel" htmlFor="favoriteColor">Favorite Color: </label>
+            <input id="domoFavoriteColor" type="text" name="favoriteColor" placeholder="Favorite Color"/>
             <input type="hidden" name="_csrf" value={props.csrf}/>
             <input className="makeDomoSubmit" type="submit" value="Make DOmo" />
         </form>
@@ -48,6 +50,7 @@ const DomoList = function(props) {
                 <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
                 <h3 className="domoName">Name: {domo.name} </h3>
                 <h3 className="domoAge">Age: {domo.age} </h3>
+                <h3 className="domoFavoriteColor">Favorite Color: {domo.favoriteColor} </h3>
             </div>
         );
     });
@@ -59,27 +62,10 @@ const DomoList = function(props) {
     );
 };
 
-const Welcome = function(props) {
-    return(
-        <div>
-            <h3>Welcome {props.name}</h3>
-        </div>
-    )
-}
-
 const loadDomosFromServer = () => {
     sendAjax('GET', '/getDomos', null, (data) => {
         ReactDOM.render(
             <DomoList domos={data.domos} />, document.querySelector("#domos")
-        );
-    });
-};
-
-const loadNameFromServer = () => {
-    sendAjax('GET', '/getName', null, (data) => {
-        console.log(data);
-        ReactDOM.render(
-            <Welcome name={data.name} />, document.querySelector("#welcome")
         );
     });
 };
@@ -92,7 +78,6 @@ const setup = function(csrf) {
     ReactDOM.render(
         <DomoList domos={[]} />, document.querySelector("#domos")
     );
-    loadNameFromServer();
     loadDomosFromServer();
 };
 
