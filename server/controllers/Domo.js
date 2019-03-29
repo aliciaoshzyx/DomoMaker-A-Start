@@ -57,13 +57,12 @@ const getDomos = (request, response) => {
 };
 
 const deleteDomo = (request, response) => {
-  console.log("in delete controller");
   const req = request;
   const res = response;
-  if (!req.body._id) {
+  if (!req.body.domoID) {
     return res.status(400).json({ error: 'An error occurred' });
   }
-  return Domo.DomoModel.deleteDomo(req.body._id, (err, docs) => {
+  return Domo.DomoModel.deleteDomo(req.body.domoID, (err) => {
     if (err) {
       console.log(err);
       return res.status(202).json({ error: 'An error occured' });

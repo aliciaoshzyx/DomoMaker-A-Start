@@ -9,23 +9,27 @@ const handleDomo = (e) => {
     }
     
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
-        loadDomosFromServer();
+      
+       
     });
+    loadDomosFromServer($("#csrfValue").val());
     return false;
 };
 
 const handleDelete = (e) => {
     e.preventDefault();
-
+    console.log("target" + e.target.id);
     $("#domoMessage").animate({width:'hide'}, 350);
-
-    sendAjax('POST', $("#deleteDomoForm").attr("action"), $("#deleteDomoForm").serialize(), function(){
-        loadDomosFromServer();
+    //not doing this properly 
+    sendAjax('POST', $(`#${e.target.id}`).attr("action"), $(`#${e.target.id}`).serialize(), function(){
+      
     });
+    loadDomosFromServer();
     return false;
 };
 
 const DomoForm = (props) => {
+    console.log(props);
     return (
         <form id="domoForm"
             onSubmit={handleDomo}
@@ -40,8 +44,8 @@ const DomoForm = (props) => {
             <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
             <label id="colorLabel" htmlFor="favoriteColor">Favorite Color: </label>
             <input id="domoFavoriteColor" type="text" name="favoriteColor" placeholder="Favorite Color"/>
-            <input type="hidden" name="_csrf" value={props.csrf}/>
-            <input className="makeDomoSubmit" type="submit" value="Make DOmo" />
+            <input type="hidden" id="csrfValue" name="_csrf" value={props.csrf}/>
+            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
         </form>
     )
 };
@@ -56,13 +60,16 @@ const DomoList = function(props) {
     }
 
     const domoNodes = props.domos.map(function(domo) {
+        let idString = `${domo.name}deleteDomoForm` ;
+        idString = idString.replace(/\s+/g, '');
+        console.log(idString);
         return (
             <div key={domo._id} className="domo">
                 <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
                 <h3 className="domoName">Name: {domo.name} </h3>
                 <h3 className="domoAge">Age: {domo.age} </h3>
                 <h3 className="domoFavoriteColor">Favorite Color: {domo.favoriteColor} </h3>
-                <form id="deleteDomoForm" 
+                <form id= {idString}
                 onSubmit={handleDelete} 
                 name="deleteDomoForm"
                 action="/deleteDomo"
@@ -82,10 +89,11 @@ const DomoList = function(props) {
     );
 };
 
-const loadDomosFromServer = () => {
+const loadDomosFromServer = (csrf) => {
+    
     sendAjax('GET', '/getDomos', null, (data) => {
         ReactDOM.render(
-            <DomoList domos={data.domos} />, document.querySelector("#domos")
+            <DomoList domos={data.domos} csrf={csrf}/>, document.querySelector("#domos")
         );
     });
 };
@@ -96,9 +104,9 @@ const setup = function(csrf) {
     );
 
     ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
+        <DomoList domos={[]} csrf={csrf}/>, document.querySelector("#domos")
     );
-    loadDomosFromServer();
+    loadDomosFromServer(csrf);
 };
 
 const getToken = () => {
@@ -106,6 +114,8 @@ const getToken = () => {
         setup(result.csrfToken);
     });
 };
+
+
 
 $(document).ready(function() {
     getToken();
