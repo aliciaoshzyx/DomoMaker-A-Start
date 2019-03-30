@@ -9,22 +9,22 @@ const handleDomo = (e) => {
     }
     
     sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
-      
+        loadDomosFromServer($("#csrfValue").val());
        
     });
-    loadDomosFromServer($("#csrfValue").val());
+    
     return false;
 };
 
 const handleDelete = (e) => {
     e.preventDefault();
-    console.log("target" + e.target.id);
+    console.log("handleDelete");
     $("#domoMessage").animate({width:'hide'}, 350);
     //not doing this properly 
     sendAjax('POST', $(`#${e.target.id}`).attr("action"), $(`#${e.target.id}`).serialize(), function(){
-      
+        
     });
-    loadDomosFromServer();
+    loadDomosFromServer($("#dcsrf").val());
     return false;
 };
 
@@ -62,7 +62,6 @@ const DomoList = function(props) {
     const domoNodes = props.domos.map(function(domo) {
         let idString = `${domo.name}deleteDomoForm` ;
         idString = idString.replace(/\s+/g, '');
-        console.log(idString);
         return (
             <div key={domo._id} className="domo">
                 <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
@@ -75,7 +74,7 @@ const DomoList = function(props) {
                 action="/deleteDomo"
                 method="POST">
                     <input type="hidden" name="domoID" value ={domo._id}/>
-                    <input type="hidden" name="_csrf" value={props.csrf}/>
+                    <input type="hidden" id="dcsrf" name="_csrf" value={props.csrf}/>
                     <input id="deleteSubmit" type="submit" value="Delete Domo"/>
                 </form>
             </div>
@@ -90,7 +89,7 @@ const DomoList = function(props) {
 };
 
 const loadDomosFromServer = (csrf) => {
-    
+    console.log("loadDomos");
     sendAjax('GET', '/getDomos', null, (data) => {
         ReactDOM.render(
             <DomoList domos={data.domos} csrf={csrf}/>, document.querySelector("#domos")
